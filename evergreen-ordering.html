@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evergreen Café Ordering System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --green-dark: #355e2b;
+      --green-main: #5f7f35;
+      --green-soft: #edf4e4;
+      --cream: #f7f2e8;
+      --white: #ffffff;
+      --text: #2f2f2f;
+      --muted: #68745f;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef3df 0%, #f8f5ec 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      padding: 32px 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .header-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 8px;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 1.05rem;
+      opacity: 0.95;
+    }
+
+    main {
+      max-width: 1320px;
+      margin: 28px auto;
+      padding: 0 16px 40px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .menu-panel,
+    .checkout-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      color: var(--green-dark);
+      margin-bottom: 18px;
+    }
+
+    .menu-group {
+      margin-bottom: 28px;
+    }
+
+    .menu-group h3 {
+      font-size: 1.2rem;
+      color: var(--green-main);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e7eddc;
+    }
+
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .item-card {
+      background: var(--cream);
+      border: 1px solid #ebe4d7;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .item-card h4 {
+      font-size: 1.05rem;
+      color: var(--green-dark);
+    }
+
+    .item-card p {
+      font-size: 0.92rem;
+      color: #555;
+    }
+
+    .price-range {
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .item-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .option-row select {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #ccd6bf;
+      background: white;
+      font-size: 0.92rem;
+    }
+
+    .item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+
+    .price {
+      color: var(--green-main);
+      font-size: 1rem;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .add-btn,
+    .checkout-btn,
+    .clear-btn,
+    .receipt-btn {
+      background: var(--green-main);
+      color: white;
+    }
+
+    .add-btn:hover,
+    .checkout-btn:hover,
+    .clear-btn:hover,
+    .receipt-btn:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+    }
+
+    .clear-btn {
+      background: #8d9b7c;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .cart-box {
+      background: var(--green-soft);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .cart-box h3 {
+      color: var(--green-dark);
+      margin-bottom: 12px;
+    }
+
+    .cart-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .cart-item {
+      background: white;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.92rem;
+    }
+
+    .cart-item-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cart-item small {
+      color: var(--muted);
+    }
+
+    .empty-cart {
+      color: #666;
+      font-size: 0.95rem;
+      padding: 8px 0;
+    }
+
+    .total {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: var(--green-dark);
+      display: flex;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 2px solid #dbe7cc;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      font-weight: bold;
+      color: var(--green-dark);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #cfd8c0;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--green-main);
+      box-shadow: 0 0 0 3px rgba(95,127,53,0.15);
+      outline: none;
+    }
+
+    .helper-text {
+      font-size: 0.85rem;
+      color: #5e6953;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .confirmation {
+      display: none;
+      margin-top: 16px;
+      background: #edf8ea;
+      border: 1px solid #bfd7b6;
+      color: #264b24;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 0.95rem;
+    }
+
+    .receipt-box {
+      margin-top: 18px;
+      display: none;
+      background: #fffdf8;
+      border: 2px dashed #b8c5a4;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .receipt-box h3 {
+      color: var(--green-dark);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .receipt-meta {
+      font-size: 0.9rem;
+      color: #586351;
+      margin-bottom: 12px;
+    }
+
+    .receipt-line,
+    .receipt-total-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 0;
+      font-size: 0.94rem;
+    }
+
+    .receipt-total-line {
+      font-weight: bold;
+      color: var(--green-dark);
+      border-top: 1px solid #d8decf;
+      margin-top: 8px;
+      padding-top: 10px;
+    }
+
+    .receipt-items {
+      border-top: 1px solid #e5eadc;
+      border-bottom: 1px solid #e5eadc;
+      padding: 8px 0;
+      margin: 10px 0;
+    }
+
+    .receipt-note {
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: #66705e;
+      text-align: center;
+    }
+
+    #clearReceiptBtn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: #dfe7d7;
+      color: #2f3e2f;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 16px 36px;
+      color: #4d5a42;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .logo {
+        width: 90px;
+        height: 90px;
+      }
+
+      .menu-items {
+        grid-template-columns: 1fr;
+      }
+
+      .option-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrap">
+      <img class="logo" src="logo.png" alt="Evergreen Café logo" />
+      <div>
+        <h1>Evergreen Café</h1>
+        <p>Student-Designed and Student-Run</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout">
+      <section class="menu-panel">
+        <h2 class="section-title">Order from the Menu</h2>
+
+        <div class="menu-group">
+          <h3>Hot Drinks</h3>
+          <div class="menu-items" id="hot-items"></div>
+        </div>
+
+        <div class="menu-group">
+          <h3>Iced Drinks</h3>
+          <div class="menu-items" id="iced-items"></div>
+        </div>
+
+        <div class="menu-group">
+          <h3>Frappuccino</h3>
+          <div class="menu-items" id="frappuccino-items"></div>
+        </div>
+      </section>
+
+      <aside class="checkout-panel">
+        <h2 class="section-title">Checkout</h2>
+
+        <div class="cart-box">
+          <h3>Your Order</h3>
+          <ul class="cart-list" id="cartList"></ul>
+          <p class="empty-cart" id="emptyCart">Your cart is empty.</p>
+          <div class="total">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">$0.00</span>
+          </div>
+          <div class="total" style="font-size:0.98rem; padding-top:10px; border-top:none; color:#4f5d46;">
+            <span>Tax (6%)</span>
+            <span id="cartTax">$0.00</span>
+          </div>
+          <div class="total">
+            <span>Total</span>
+            <span id="cartTotal">$0.00</span>
+          </div>
+          <button class="clear-btn" id="clearCartBtn" type="button">Clear Cart</button>
+        </div>
+
+        <form id="checkoutForm">
+          <div>
+            <label for="customerName">Full Name</label>
+            <input type="text" id="customerName" name="customerName" placeholder="Enter your name" required />
+          </div>
+
+          <div>
+            <label for="studentEmail">Student Email</label>
+            <input type="email" id="studentEmail" name="studentEmail" placeholder="student@millersville.edu" required />
+            <p class="helper-text">Please use a valid student email address during checkout.</p>
+          </div>
+
+          <button class="checkout-btn" type="submit">Place Order</button>
+        </form>
+
+        <div class="confirmation" id="confirmationMessage"></div>
+        <div class="receipt-box" id="receiptBox">
+          <h3>Evergreen Café Receipt</h3>
+          <div class="receipt-meta" id="receiptMeta"></div>
+          <div class="receipt-items" id="receiptItems"></div>
+          <div class="receipt-total-line"><span>Subtotal</span><span id="receiptSubtotal">$0.00</span></div>
+          <div class="receipt-total-line"><span>Tax (6%)</span><span id="receiptTax">$0.00</span></div>
+          <div class="receipt-total-line"><span>Grand Total</span><span id="receiptTotal">$0.00</span></div>
+          <div class="receipt-note">Please show this receipt at the register.</div>
+          <button id="clearReceiptBtn" type="button">Clear Receipt</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Café Hours:</strong> Monday - Friday: 7:30 AM - 5:00 PM | Saturday - Sunday: Closed</p>
+    <p>&copy; Evergreen Café 2026</p>
+  </footer>
+
+  <script>
+    const TAX_RATE = 0.06;
+
+    const FLAVOR_OPTIONS = [
+      'Vanilla',
+      'Caramel',
+      'Toffee Nut',
+      'Hazelnut',
+      'Raspberry',
+      'Mocha',
+      'White Chocolate'
+    ];
+
+    const menuData = {
+      hot: [
+        { name: 'Fresh Brewed Coffee', description: 'Classic hot brewed coffee.', sizes: { S: 2.30, M: 2.75, L: 3.00 } },
+        { name: 'Americano', description: 'Espresso with hot water.', sizes: { S: 2.90, M: 3.30, L: 3.50 } },
+        { name: 'Cappuccino / Latte', description: 'Milk espresso drink.', sizes: { S: 3.50, M: 4.25, L: 4.55 } },
+        { name: 'Flat White', description: 'Smooth espresso and milk.', sizes: { S: 3.50, M: 4.25, L: 4.55 } },
+        { name: 'Chai Latte', description: 'Spiced tea latte.', sizes: { S: 3.65, M: 4.50, L: 4.75 } },
+        { name: 'Caramel Macchiato', description: 'Espresso, milk, and caramel.', sizes: { S: 4.25, M: 4.75, L: 5.00 } },
+        { name: 'Salted Caramel Mocha Latte', description: 'Mocha latte with salted caramel.', sizes: { S: 4.25, M: 4.75, L: 5.00 } },
+        { name: 'Raspberry Mocha Latte', description: 'Mocha latte with raspberry.', sizes: { S: 4.25, M: 4.75, L: 5.00 } },
+        { name: 'Herbal Tea', description: 'Black, Zen, or Passion.', sizes: { S: 2.00, M: 2.50, L: 2.75 } },
+        { name: 'Hot Chocolate', description: 'Rich hot chocolate.', sizes: { S: 2.80, M: 3.25, L: 3.50 } },
+        { name: 'Solo Espresso', description: 'Single espresso shot.', sizes: { S: 2.00 } },
+        { name: 'Doppio Espresso', description: 'Double espresso shot.', sizes: { S: 2.50 } },
+        { name: 'Flavored Steamer', description: 'Steamed milk with flavor.', sizes: { S: 2.75, M: 3.00, L: 3.25 }, flavorable: true },
+        { name: 'Flavored Latte', description: 'Latte with added flavor.', sizes: { S: 4.00, M: 4.50, L: 4.75 }, flavorable: true },
+        { name: 'Flavored Coffee', description: 'Fresh brewed coffee with flavor.', sizes: { S: 3.00, M: 3.50, L: 3.75 }, flavorable: true }
+      ],
+      iced: [
+        { name: 'Iced Coffee', description: 'Cold coffee over ice.', sizes: { S: 2.35, M: 2.80, L: 3.25 } },
+        { name: 'Iced Americano', description: 'Chilled americano over ice.', sizes: { S: 3.25, M: 3.50, L: 3.75 } },
+        { name: 'Iced Latte', description: 'Cold latte over ice.', sizes: { S: 3.75, M: 4.25, L: 4.75 } },
+        { name: 'Iced Salted Caramel Mocha', description: 'Iced mocha with salted caramel.', sizes: { S: 4.50, M: 5.00, L: 5.25 } },
+        { name: 'Iced Chai Latte', description: 'Chilled chai latte.', sizes: { S: 4.25, M: 4.75, L: 5.00 } },
+        { name: 'Iced Caramel Macchiato', description: 'Iced espresso, milk, and caramel.', sizes: { S: 4.50, M: 5.00, L: 5.25 } },
+        { name: 'Iced Herbal Tea', description: 'Black, Zen, or Passion over ice.', sizes: { S: 2.25, M: 2.75, L: 3.25 } },
+        { name: 'Iced Doppio', description: 'Double espresso over ice.', sizes: { S: 3.50 } },
+        { name: 'Iced Flavored Latte', description: 'Iced latte with flavor.', sizes: { S: 4.25, M: 4.75, L: 5.00 }, flavorable: true },
+        { name: 'Iced Flavored Coffee', description: 'Iced coffee with flavor.', sizes: { S: 3.10, M: 3.55, L: 4.00 }, flavorable: true }
+      ],
+      frappuccino: [
+        { name: 'Frappuccino', description: 'Available in Coffee, Caramel, Java Chip, Double Chocolate, Mocha, or Vanilla Bean.', sizes: { M: 5.00 }, frappeFlavorOnly: true }
+      ]
+    };
+
+    const cart = [];
+
+    function formatPriceRange(sizes) {
+      return Object.entries(sizes)
+        .map(([size, price]) => `${size}: $${price.toFixed(2)}`)
+        .join(' • ');
+    }
+
+    function getSelectedPrice(item, size) {
+      return item.sizes[size];
+    }
+
+    function renderMenu(items, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      items.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+
+        const sizeOptions = Object.keys(item.sizes)
+          .map((size) => `<option value="${size}">${size}</option>`)
+          .join('');
+
+        const flavorOptions = FLAVOR_OPTIONS.map((flavor) => `<option value="${flavor}">${flavor}</option>`).join('');
+        const frappeOptions = ['Coffee', 'Caramel', 'Java Chip', 'Double Chocolate', 'Mocha', 'Vanilla Bean']
+          .map((flavor) => `<option value="${flavor}">${flavor}</option>`)
+          .join('');
+
+        card.innerHTML = `
+          <h4>${item.name}</h4>
+          <p>${item.description}</p>
+          <div class="price-range">${formatPriceRange(item.sizes)}</div>
+          <div class="item-options">
+            <div class="option-row">
+              <select class="size-select" aria-label="Choose size for ${item.name}">
+                ${sizeOptions}
+              </select>
+              ${item.flavorable ? `
+                <select class="flavor-select" aria-label="Choose flavor for ${item.name}">
+                  <option value="">Choose flavor</option>
+                  ${flavorOptions}
+                </select>
+              ` : ''}
+              ${item.frappeFlavorOnly ? `
+                <select class="frappe-select" aria-label="Choose frappuccino flavor">
+                  ${frappeOptions}
+                </select>
+              ` : ''}
+            </div>
+          </div>
+          <div class="item-meta">
+            <span class="price"></span>
+            <button class="add-btn" type="button">Add to Order</button>
+          </div>
+        `;
+
+        const sizeSelect = card.querySelector('.size-select');
+        const priceEl = card.querySelector('.price');
+        const addBtn = card.querySelector('.add-btn');
+        const flavorSelect = card.querySelector('.flavor-select');
+        const frappeSelect = card.querySelector('.frappe-select');
+
+        function updateCardPrice() {
+          const selectedSize = sizeSelect.value;
+          const price = getSelectedPrice(item, selectedSize);
+          priceEl.textContent = `$${price.toFixed(2)}`;
+        }
+
+        sizeSelect.addEventListener('change', updateCardPrice);
+        updateCardPrice();
+
+        addBtn.addEventListener('click', () => {
+          const selectedSize = sizeSelect.value;
+          const price = getSelectedPrice(item, selectedSize);
+          const flavor = flavorSelect ? flavorSelect.value : '';
+          const frappeFlavor = frappeSelect ? frappeSelect.value : '';
+
+          if (item.flavorable && !flavor) {
+            alert(`Please choose a flavor for ${item.name}.`);
+            return;
+          }
+
+          let displayName = `${item.name} (${selectedSize})`;
+          const extras = [];
+
+          if (flavor) extras.push(flavor);
+          if (frappeFlavor) extras.push(frappeFlavor);
+
+          cart.push({
+            baseName: item.name,
+            name: displayName,
+            options: extras,
+            price
+          });
+
+          renderCart();
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById('cartList');
+      const emptyCart = document.getElementById('emptyCart');
+      const cartSubtotal = document.getElementById('cartSubtotal');
+      const cartTax = document.getElementById('cartTax');
+      const cartTotal = document.getElementById('cartTotal');
+
+      cartList.innerHTML = '';
+
+      if (cart.length === 0) {
+        emptyCart.style.display = 'block';
+      } else {
+        emptyCart.style.display = 'none';
+      }
+
+      let subtotal = 0;
+
+      cart.forEach((item, index) => {
+        subtotal += item.price;
+        const li = document.createElement('li');
+        li.className = 'cart-item';
+        li.innerHTML = `
+          <div class="cart-item-text">
+            <span>${index + 1}. ${item.name}</span>
+            ${item.options && item.options.length ? `<small>${item.options.join(' • ')}</small>` : ''}
+          </div>
+          <span>$${item.price.toFixed(2)}</span>
+        `;
+        cartList.appendChild(li);
+      });
+
+      const tax = subtotal * TAX_RATE;
+      const total = subtotal + tax;
+
+      cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+      cartTax.textContent = `$${tax.toFixed(2)}`;
+      cartTotal.textContent = `$${total.toFixed(2)}`;
+    }
+
+    document.getElementById('clearCartBtn').addEventListener('click', () => {
+      cart.length = 0;
+      renderCart();
+      document.getElementById('confirmationMessage').style.display = 'none';
+      document.getElementById('receiptBox').style.display = 'none';
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById('customerName').value.trim();
+      const email = document.getElementById('studentEmail').value.trim();
+      const confirmation = document.getElementById('confirmationMessage');
+      const receiptBox = document.getElementById('receiptBox');
+      const receiptMeta = document.getElementById('receiptMeta');
+      const receiptItems = document.getElementById('receiptItems');
+      const receiptSubtotal = document.getElementById('receiptSubtotal');
+      const receiptTax = document.getElementById('receiptTax');
+      const receiptTotal = document.getElementById('receiptTotal');
+
+      if (cart.length === 0) {
+        confirmation.style.display = 'block';
+        confirmation.textContent = 'Please add at least one item before placing your order.';
+        receiptBox.style.display = 'none';
+        return;
+      }
+
+      const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+      const tax = subtotal * TAX_RATE;
+      const total = subtotal + tax;
+      const orderTime = new Date().toLocaleString();
+
+      confirmation.style.display = 'block';
+      confirmation.innerHTML = `<strong>Order placed for ${name}.</strong><br>Email: ${email}`;
+
+      receiptMeta.innerHTML = `Name: ${name}<br>Email: ${email}<br>Time: ${orderTime}`;
+      receiptItems.innerHTML = cart.map((item, index) => `
+        <div class="receipt-line">
+          <span>${index + 1}. ${item.name}${item.options.length ? ` - ${item.options.join(', ')}` : ''}</span>
+          <span>$${item.price.toFixed(2)}</span>
+        </div>
+      `).join('');
+      receiptSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+      receiptTax.textContent = `$${tax.toFixed(2)}`;
+      receiptTotal.textContent = `$${total.toFixed(2)}`;
+      receiptBox.style.display = 'block';
+
+      cart.length = 0;
+      renderCart();
+      event.target.reset();
+    });
+
+    document.getElementById('clearReceiptBtn').addEventListener('click', () => {
+      document.getElementById('receiptBox').style.display = 'none';
+      document.getElementById('confirmationMessage').style.display = 'none';
+    });
+
+    renderMenu(menuData.hot, 'hot-items');
+    renderMenu(menuData.iced, 'iced-items');
+    renderMenu(menuData.frappuccino, 'frappuccino-items');
+    renderCart();
+  </script>
+</body>
+</html>
